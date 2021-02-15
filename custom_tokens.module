@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * Implements hook_token_info().
+ */
+function custom_tokens_token_info() {
+  $info['tokens']['node']['title_first_one_character'] = [
+    'name' => t("Title's first one character"),
+    'description' => t("The title's first one character."),
+  ];
+  $info['tokens']['node']['title_first_three_characters'] = [
+    'name' => t("Title's first three characters"),
+    'description' => t("The title's first three characters."),
+  ];
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function custom_tokens_tokens($type, $tokens, array $data, array $options, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+  if ($type == 'node') {
+    foreach ($tokens as $name => $original) {
+      // Find the desired token by name
+      switch ($name) {
+        case 'title_first_one_character':
+          $node = $data['node'];
+          $replacements[$original] = substr($node->getTitle(), 0, 1);
+          break;
+      }
+	  switch ($name) {
+        case 'title_first_three_characters':
+          $node = $data['node'];
+          $replacements[$original] = substr($node->getTitle(), 0, 3);
+          break;
+      }
+    }
+  }
+  return $replacements;
+}
